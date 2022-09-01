@@ -2,6 +2,14 @@ import os
 import zipfile
 import sys
 import getopt
+import platform
+
+sys_type = platform.system()
+if sys_type == "Windows":
+    print("OS is Windows!!!")
+elif sys_type == "Linux":
+    print("OS is Linux!!!")
+
 
 def mkdir(pdir, begin, end):
     cnt = begin
@@ -12,9 +20,12 @@ def mkdir(pdir, begin, end):
             os.makedirs(cdir)
 
 def rename(path):
+    if path[-1] != '/' or path[-1] != '\\':
+        if sys_type == "Windows":
+            path = path + '\\'
+        elif sys_type == "Linux":
+            path = path + '/'
     files = os.listdir(path)
-    print('path = ', path)
-    print(files)
     for file in files:
         oldname = path + file 
         newname = path + (path[-2:-6:-1])[::-1] + '_' + file[0:5] + 'kph_dds' + (file[-1:-4:-1])[::-1]
