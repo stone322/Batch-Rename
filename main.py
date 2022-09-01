@@ -5,11 +5,6 @@ import getopt
 import platform
 
 sys_type = platform.system()
-if sys_type == "Windows":
-    print("OS is Windows!!!")
-elif sys_type == "Linux":
-    print("OS is Linux!!!")
-
 
 def mkdir(pdir, begin, end):
     cnt = begin
