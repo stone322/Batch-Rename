@@ -35,6 +35,28 @@ def rename(path):
         
     return
 
+def rename_zip_dds(path):
+    if path[-1] != '/' or path[-1] != '\\':
+        if sys_type == "Windows":
+            path = path + '\\'
+        elif sys_type == "Linux":
+            path = path + '/'
+    files = os.listdir(path)
+    for file in files:
+        oldname = path + file 
+        newname = path + (path[-2:-6:-1])[::-1] + '_' + file + '_dds'
+        try:
+            print(oldname, '  -------->  ', newname)
+            os.rename(str(oldname), str(newname))
+            zipDir(str(newname), str(newname) + '.zip')
+        except Exception as e:
+            print(e)
+            print('rename file fail')
+        else:
+            print('rename file success')
+        
+    return
+
 def zipDir(dirpath, outFullName):
     """
     压缩指定文件夹
@@ -51,32 +73,32 @@ def zipDir(dirpath, outFullName):
             zip.write(os.path.join(path, filename), os.path.join(fpath, filename))
     zip.close()
 
-def zipdds(path):
-    files = os.listdir(path)
-    for file in files:
-        zipDir(path + file, path + file + 'kph_dds.zip')
-    return 
 
-# mkdir('/home/luobm/Downloads/0816/', 1, 60)
-
-# zipDir('/home/luobm/Downloads/0805/0805_01_5', '/home/luobm/Downloads/0805/0805_01_5.zip')
-# zipdds('/home/luobm/Downloads/0805/')
+def print_help():
+    print('rename: python3 main.py -p <file_path>')
+    print('rename and zip: python3 main.py -rz <file_path>')
 
 def main(argv):
     file_path = ''
     try:
         opts, args = getopt.getopt(argv, "hp:", ['help', 'file_path='])
     except getopt.GetoptError:
-        print('python3 main.py -p <file_path>')
+        print_help()
         sys.exit(2)
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            print('python3 main.py -p <file_path>')
+            print_help()
             sys.exit()
         elif opt in ('-p', '--file_path'):
             file_path = arg
             rename(file_path)
+        elif opt in ('-rz', '--rename_and_zip'):
+            file_path = arg
+            rename_zip_dds(file_path)
     return 
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+
+    # mkdir('/home/luobm/Downloads/0816/', 1, 60)
+    # rename_zip_dds('D:\\luobaoming\\RTI_FILES\\0907')
