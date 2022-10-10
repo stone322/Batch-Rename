@@ -16,9 +16,9 @@ def mkdir(pdir, begin, end):
 
 def rename(path):
     if path[-1] != '/' or path[-1] != '\\':
-        if sys_type == "Windows":
+        if sys_type == 'Windows':
             path = path + '\\'
-        elif sys_type == "Linux":
+        elif sys_type == 'Linux':
             path = path + '/'
     files = os.listdir(path)
     for file in files:
@@ -35,36 +35,41 @@ def rename(path):
         
     return
 
-def rename_zip_dds(path):
+
+def rename_zip_dds(path, date = ''):
     if path[-1] != '/' or path[-1] != '\\':
-        if sys_type == "Windows":
+        if sys_type == 'Windows':
             path = path + '\\'
-        elif sys_type == "Linux":
+        elif sys_type == 'Linux':
             path = path + '/'
     files = os.listdir(path)
     for file in files:
         oldname = path + file 
-        newname = path + (path[-2:-6:-1])[::-1] + '_' + file + '_dds'
+        if date == '':
+            newname = path + (path[-2:-6:-1])[::-1] + '_' + file + '_dds'
+        else:
+            newname = path + date + '_' + file + '_dds'
         try:
             print(oldname, '  -------->  ', newname)
             os.rename(str(oldname), str(newname))
-            zipDir(str(newname), str(newname) + '.zip')
         except Exception as e:
             print(e)
-            print('rename file fail')
+            print('ERROR: Rename file failed!!!')
         else:
-            print('rename file success')
+            print('Rename file succeeded.')
+            zipDir(str(newname), str(newname) + '.zip')
+            print('Zip file succeeded.')
         
     return
 
 def zipDir(dirpath, outFullName):
-    """
+    '''
     压缩指定文件夹
     :param dirpath: 目标文件夹路径
     :param outFullName: 压缩文件保存路径+xxxx.zip
     :return: 无
-    """
-    zip = zipfile.ZipFile(outFullName, "w", zipfile.ZIP_DEFLATED)
+    '''
+    zip = zipfile.ZipFile(outFullName, 'w', zipfile.ZIP_DEFLATED)
     for path, dirnames, filenames in os.walk(dirpath):
         # 去掉目标跟路径，只对目标文件夹下边的文件及文件夹进行压缩
         fpath = path.replace(dirpath, '')
@@ -81,7 +86,7 @@ def print_help():
 def main(argv):
     file_path = ''
     try:
-        opts, args = getopt.getopt(argv, "hp:", ['help', 'file_path='])
+        opts, args = getopt.getopt(argv, 'hp:', ['help', 'file_path='])
     except getopt.GetoptError:
         print_help()
         sys.exit(2)
@@ -97,8 +102,7 @@ def main(argv):
             rename_zip_dds(file_path)
     return 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main(sys.argv[1:])
 
-    # mkdir('/home/luobm/Downloads/0816/', 1, 60)
-    # rename_zip_dds('D:\\luobaoming\\RTI_FILES\\0907')
+    rename_zip_dds('D:\\luobaoming\\RTI_FILES\\1010')
